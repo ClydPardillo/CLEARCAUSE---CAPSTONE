@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Clock, Shield, Search, BarChart4, CreditCard } from 'lucide-react';
+import { ChevronRight, Clock, Shield, Search, BarChart4, CreditCard, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
