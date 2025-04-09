@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// ClearCause brand colors
+				clearcause: {
+					primary: '#0891B2', // Teal
+					secondary: '#0E7490', // Darker Teal
+					accent: '#F97316', // Orange for CTAs
+					muted: '#E0F2FE', // Light blue
+					"light-blue": '#BAE6FD',
+					"dark-blue": '#0369A1',
+					success: '#22C55E', // Green for verified milestones
+					warning: '#F59E0B', // Amber for pending
+					background: '#F8FAFC', // Light gray background
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +97,25 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-slow': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' }
+				},
+				'progress-fill': {
+					'0%': { width: '0%' },
+					'100%': { width: 'var(--progress-width)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-slow': 'pulse-slow 3s infinite ease-in-out',
+				'progress-fill': 'progress-fill 1.5s ease-out forwards'
+			},
+			fontFamily: {
+				sans: ['Inter var', 'Inter', 'sans-serif'],
+				display: ['Montserrat', 'sans-serif']
 			}
 		}
 	},
