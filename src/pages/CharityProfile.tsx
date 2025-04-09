@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ExternalLink, Mail, Phone, Globe, Star, BarChart4, Award, Calendar } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Mail, Phone, Globe, Star, BarChart4, Award, Calendar, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import Navbar from '@/components/layout/Navbar';
