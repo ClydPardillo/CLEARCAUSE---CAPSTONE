@@ -18,6 +18,10 @@ import DonorDashboard from "./pages/donor/DonorDashboard";
 import DonorDonations from "./pages/donor/DonorDonations";
 import DonorProfile from "./pages/donor/DonorProfile";
 import DonorSettings from "./pages/donor/DonorSettings";
+import CharityApplicationForm from "./pages/CharityApplicationForm";
+import CharityDashboard from "./pages/charity/CharityDashboard";
+import ManageCampaigns from "./pages/charity/ManageCampaigns";
+import CampaignForm from "./pages/charity/CampaignForm";
 
 const queryClient = new QueryClient();
 
@@ -37,10 +41,15 @@ const App = () => (
           <Route path="/donate/error" element={<DonateError />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/signup/charity-application" element={<CharityApplicationForm />} />
           <Route path="/donor/dashboard" element={<DonorDashboard />} />
           <Route path="/donor/donations" element={<DonorDonations />} />
           <Route path="/donor/profile" element={<DonorProfile />} />
           <Route path="/donor/settings" element={<DonorSettings />} />
+          <Route path="/charity/dashboard" element={<CharityDashboard />} />
+          <Route path="/charity/campaigns" element={<ManageCampaigns />} />
+          <Route path="/charity/campaigns/new" element={<CampaignForm />} />
+          <Route path="/charity/campaigns/edit/:campaignId" element={<CampaignForm />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
