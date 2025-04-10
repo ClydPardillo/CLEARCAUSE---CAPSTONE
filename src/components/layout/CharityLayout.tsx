@@ -1,7 +1,16 @@
 
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ListChecks, BadgeCheck, DollarSign, Landmark, LogOut } from 'lucide-react';
+import { 
+  LayoutDashboard, 
+  ListChecks, 
+  BadgeCheck, 
+  DollarSign, 
+  Landmark, 
+  LogOut,
+  Bell,
+  User
+} from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
@@ -38,6 +47,11 @@ const CharityLayout: React.FC<CharityLayoutProps> = ({ children, title }) => {
       path: '/charity/profile', 
       label: 'Organization Profile', 
       icon: <Landmark className="w-5 h-5" /> 
+    },
+    { 
+      path: '/charity/settings', 
+      label: 'Settings', 
+      icon: <Bell className="w-5 h-5" /> 
     },
   ];
 

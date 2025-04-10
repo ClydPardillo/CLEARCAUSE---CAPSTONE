@@ -26,6 +26,9 @@ import ManageMilestones from "./pages/charity/ManageMilestones";
 import SubmitProofForm from "./pages/charity/SubmitProofForm";
 import PostImpactUpdate from "./pages/charity/PostImpactUpdate";
 import VerificationStatus from "./pages/charity/VerificationStatus";
+import FundsManagement from "./pages/charity/FundsManagement";
+import OrganizationProfile from "./pages/charity/OrganizationProfile";
+import CharitySettings from "./pages/charity/CharitySettings";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +61,9 @@ const App = () => (
           <Route path="/charity/campaigns/:campaignId/milestones/:milestoneId/submit" element={<SubmitProofForm />} />
           <Route path="/charity/campaigns/:campaignId/update" element={<PostImpactUpdate />} />
           <Route path="/charity/verifications" element={<VerificationStatus />} />
+          <Route path="/charity/funds" element={<FundsManagement />} />
+          <Route path="/charity/profile" element={<OrganizationProfile />} />
+          <Route path="/charity/settings" element={<CharitySettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
