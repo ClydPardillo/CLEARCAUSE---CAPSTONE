@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { 
-  BankIcon, 
+  Landmark, 
   Building2, 
   DollarSign, 
   Download, 
@@ -171,7 +171,7 @@ const FundsManagement: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <BankIcon className="h-5 w-5" />
+                <Landmark className="h-5 w-5" />
                 Payout Bank Account Details
               </span>
               {!editingBankDetails && (
