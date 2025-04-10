@@ -1,14 +1,14 @@
 
 import React, { useState } from 'react';
 import { 
-  BankIcon, 
   Building2, 
   DollarSign, 
   Download, 
   FileText, 
   Filter, 
   PencilIcon, 
-  Save
+  Save,
+  Landmark // Replacing BankIcon with Landmark which represents a bank building
 } from 'lucide-react';
 import { format } from 'date-fns';
 import CharityLayout from '@/components/layout/CharityLayout';
@@ -171,7 +171,7 @@ const FundsManagement: React.FC = () => {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <BankIcon className="h-5 w-5" />
+                <Landmark className="h-5 w-5" /> {/* Using Landmark icon instead of BankIcon */}
                 Payout Bank Account Details
               </span>
               {!editingBankDetails && (
