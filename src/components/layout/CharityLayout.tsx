@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, ListChecks, BadgeCheck, DollarSign, Landmark, LogOut, PlusCircle } from 'lucide-react';
+import { LayoutDashboard, ListChecks, BadgeCheck, DollarSign, Landmark, LogOut } from 'lucide-react';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
