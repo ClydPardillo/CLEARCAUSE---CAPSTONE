@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { XCircle, RefreshCw, AlertTriangle } from 'lucide-react';
@@ -9,7 +10,7 @@ const DonateError: React.FC = () => {
   const navigate = useNavigate();
   // In a real app, these would come from query params or state
   const campaignId = "1";
-  const errorCode = "payment_failed";
+  const errorCode = "payment_failed" as "payment_failed" | "connection_error" | "unknown_error";
   
   const getErrorMessage = () => {
     switch (errorCode) {
