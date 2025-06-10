@@ -29,6 +29,12 @@ import VerificationStatus from "./pages/charity/VerificationStatus";
 import FundsManagement from "./pages/charity/FundsManagement";
 import OrganizationProfile from "./pages/charity/OrganizationProfile";
 import CharitySettings from "./pages/charity/CharitySettings";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserManagement from "./pages/admin/UserManagement";
+import MilestoneVerification from "./pages/admin/MilestoneVerification";
+import ContentManagement from "./pages/admin/ContentManagement";
+import ReportsAndLogs from "./pages/admin/ReportsAndLogs";
+import SupportHandling from "./pages/admin/SupportHandling";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +70,12 @@ const App = () => (
           <Route path="/charity/funds" element={<FundsManagement />} />
           <Route path="/charity/profile" element={<OrganizationProfile />} />
           <Route path="/charity/settings" element={<CharitySettings />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/milestones" element={<MilestoneVerification />} />
+          <Route path="/admin/content" element={<ContentManagement />} />
+          <Route path="/admin/reports" element={<ReportsAndLogs />} />
+          <Route path="/admin/support" element={<SupportHandling />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
