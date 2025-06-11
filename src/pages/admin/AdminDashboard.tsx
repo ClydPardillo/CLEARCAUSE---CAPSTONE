@@ -1,48 +1,53 @@
 
 import React from 'react';
 import { 
-  Users, 
+  Shield, 
   CheckCircle, 
-  Edit3, 
-  FileText, 
-  HeadphonesIcon,
+  DollarSign, 
+  FileText,
+  Users,
   TrendingUp,
   AlertTriangle,
-  DollarSign
+  Clock
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const stats = [
     {
-      title: "Total Users",
-      value: "2,847",
-      change: "+12%",
-      icon: Users,
-      color: "text-blue-600"
+      title: "Pending Verifications",
+      value: "15",
+      change: "+3 new",
+      icon: Clock,
+      color: "text-orange-600",
+      href: "/admin/verifications"
     },
     {
-      title: "Pending Verifications",
-      value: "23",
-      change: "-5%",
-      icon: CheckCircle,
-      color: "text-orange-600"
+      title: "New Applications",
+      value: "8",
+      change: "This week",
+      icon: FileText,
+      color: "text-blue-600",
+      href: "/admin/applications"
+    },
+    {
+      title: "Pending Payouts",
+      value: "₱450K",
+      change: "12 releases",
+      icon: DollarSign,
+      color: "text-green-600",
+      href: "/admin/payouts"
     },
     {
       title: "Active Campaigns",
       value: "156",
-      change: "+8%",
+      change: "+8 this month",
       icon: TrendingUp,
-      color: "text-green-600"
-    },
-    {
-      title: "Total Funds Raised",
-      value: "₱2.3M",
-      change: "+15%",
-      icon: DollarSign,
-      color: "text-purple-600"
+      color: "text-purple-600",
+      href: "/admin/campaigns"
     }
   ];
 
@@ -50,99 +55,97 @@ const AdminDashboard = () => {
     {
       id: 1,
       type: "verification",
-      message: "New charity verification submitted by Hope Foundation",
+      message: "Milestone proof submitted for Clean Water Project",
       time: "2 hours ago",
-      status: "pending"
+      status: "pending",
+      href: "/admin/verifications/1"
     },
     {
       id: 2,
-      type: "milestone",
-      message: "Milestone proof submitted for Education for All campaign",
+      type: "application",
+      message: "New charity application from Hope Foundation",
       time: "4 hours ago",
-      status: "review"
+      status: "review",
+      href: "/admin/applications"
     },
     {
       id: 3,
-      type: "support",
-      message: "User reported payment issue",
+      type: "payout",
+      message: "Fund release approved for Education for All",
       time: "6 hours ago",
-      status: "urgent"
+      status: "completed",
+      href: "/admin/payouts"
     },
     {
       id: 4,
-      type: "user",
-      message: "User account flagged for suspicious activity",
+      type: "alert",
+      message: "Campaign flagged for review by community",
       time: "1 day ago",
-      status: "warning"
+      status: "urgent",
+      href: "/admin/campaigns"
     }
   ];
 
   const quickActions = [
     {
-      title: "User Management",
-      description: "Manage donor and charity accounts",
-      icon: Users,
-      href: "/admin/users",
-      color: "bg-blue-50 text-blue-600"
-    },
-    {
-      title: "Milestone Verification",
-      description: "Review proof submissions",
+      title: "Verification Queue",
+      description: "Review milestone proofs",
       icon: CheckCircle,
-      href: "/admin/milestones",
-      color: "bg-green-50 text-green-600"
+      href: "/admin/verifications",
+      color: "bg-green-50 text-green-600",
+      count: "15 pending"
     },
     {
-      title: "Content Management",
-      description: "Edit homepage and announcements",
-      icon: Edit3,
-      href: "/admin/content",
-      color: "bg-purple-50 text-purple-600"
+      title: "Fund Releases",
+      description: "Authorize approved payouts",
+      icon: DollarSign,
+      href: "/admin/payouts",
+      color: "bg-blue-50 text-blue-600",
+      count: "₱450K pending"
     },
     {
-      title: "Reports & Logs",
-      description: "Generate system reports",
+      title: "Charity Applications",
+      description: "Review new registrations",
+      icon: Shield,
+      href: "/admin/applications",
+      color: "bg-purple-50 text-purple-600",
+      count: "8 new"
+    },
+    {
+      title: "Platform Settings",
+      description: "Manage site configuration",
       icon: FileText,
-      href: "/admin/reports",
-      color: "bg-orange-50 text-orange-600"
-    },
-    {
-      title: "Support Handling",
-      description: "Manage user concerns",
-      icon: HeadphonesIcon,
-      href: "/admin/support",
-      color: "bg-red-50 text-red-600"
+      href: "/admin/settings",
+      color: "bg-orange-50 text-orange-600",
+      count: null
     }
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight">ClearCause Admin Dashboard</h1>
         <p className="text-muted-foreground">
-          Manage users, verify milestones, and oversee platform operations
+          Monitor platform activity and manage verification processes
         </p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className={stat.change.startsWith('+') ? 'text-green-600' : 'text-red-600'}>
-                  {stat.change}
-                </span>{' '}
-                from last month
-              </p>
-            </CardContent>
-          </Card>
+          <Link key={index} to={stat.href}>
+            <Card className="hover:shadow-md transition-shadow cursor-pointer">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                <stat.icon className={`h-4 w-4 ${stat.color}`} />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground">{stat.change}</p>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
 
@@ -157,15 +160,22 @@ const AdminDashboard = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             {quickActions.map((action, index) => (
-              <div key={index} className="flex items-center space-x-4 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer">
-                <div className={`p-2 rounded-lg ${action.color}`}>
-                  <action.icon className="h-5 w-5" />
+              <Link key={index} to={action.href}>
+                <div className="flex items-center space-x-4 p-3 rounded-lg border hover:bg-muted/50 cursor-pointer transition-colors">
+                  <div className={`p-2 rounded-lg ${action.color}`}>
+                    <action.icon className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-medium">{action.title}</h4>
+                    <p className="text-sm text-muted-foreground">{action.description}</p>
+                  </div>
+                  {action.count && (
+                    <Badge variant="outline" className="text-xs">
+                      {action.count}
+                    </Badge>
+                  )}
                 </div>
-                <div className="flex-1">
-                  <h4 className="font-medium">{action.title}</h4>
-                  <p className="text-sm text-muted-foreground">{action.description}</p>
-                </div>
-              </div>
+              </Link>
             ))}
           </CardContent>
         </Card>
@@ -175,48 +185,50 @@ const AdminDashboard = () => {
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
             <CardDescription>
-              Latest system events requiring attention
+              Latest platform events requiring attention
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {recentActivity.map((activity) => (
-              <div key={activity.id} className="flex items-start space-x-3">
-                <div className="flex-shrink-0">
-                  {activity.status === 'urgent' && (
-                    <AlertTriangle className="h-5 w-5 text-red-500" />
-                  )}
-                  {activity.status === 'warning' && (
-                    <AlertTriangle className="h-5 w-5 text-yellow-500" />
-                  )}
-                  {activity.status === 'pending' && (
-                    <CheckCircle className="h-5 w-5 text-blue-500" />
-                  )}
-                  {activity.status === 'review' && (
-                    <FileText className="h-5 w-5 text-purple-500" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900">
-                    {activity.message}
-                  </p>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <p className="text-xs text-muted-foreground">{activity.time}</p>
-                    <Badge 
-                      variant={
-                        activity.status === 'urgent' ? 'destructive' :
-                        activity.status === 'warning' ? 'secondary' :
-                        'outline'
-                      }
-                      className="text-xs"
-                    >
-                      {activity.status}
-                    </Badge>
+              <Link key={activity.id} to={activity.href}>
+                <div className="flex items-start space-x-3 p-2 rounded hover:bg-muted/50 transition-colors cursor-pointer">
+                  <div className="flex-shrink-0 mt-1">
+                    {activity.status === 'urgent' && (
+                      <AlertTriangle className="h-4 w-4 text-red-500" />
+                    )}
+                    {activity.status === 'pending' && (
+                      <Clock className="h-4 w-4 text-orange-500" />
+                    )}
+                    {activity.status === 'review' && (
+                      <CheckCircle className="h-4 w-4 text-blue-500" />
+                    )}
+                    {activity.status === 'completed' && (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900">
+                      {activity.message}
+                    </p>
+                    <div className="flex items-center space-x-2 mt-1">
+                      <p className="text-xs text-muted-foreground">{activity.time}</p>
+                      <Badge 
+                        variant={
+                          activity.status === 'urgent' ? 'destructive' :
+                          activity.status === 'pending' ? 'secondary' :
+                          'outline'
+                        }
+                        className="text-xs"
+                      >
+                        {activity.status}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
-            <Button variant="outline" className="w-full mt-4">
-              View All Activity
+            <Button variant="outline" className="w-full mt-4" asChild>
+              <Link to="/admin/logs">View All Activity</Link>
             </Button>
           </CardContent>
         </Card>
