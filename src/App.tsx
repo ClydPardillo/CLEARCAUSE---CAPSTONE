@@ -38,6 +38,7 @@ import CharityManagement from "./pages/admin/CharityManagement";
 import CharityApplicationReview from "./pages/admin/CharityApplicationReview";
 import DonorManagement from "./pages/admin/DonorManagement";
 import CampaignManagement from "./pages/admin/CampaignManagement";
+import ScorecardManagement from "./pages/admin/ScorecardManagement";
 import PlatformSettings from "./pages/admin/PlatformSettings";
 import AuditLogs from "./pages/admin/AuditLogs";
 
