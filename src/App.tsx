@@ -85,6 +85,7 @@ const App = () => (
           <Route path="/admin/applications" element={<CharityApplicationReview />} />
           <Route path="/admin/donors" element={<DonorManagement />} />
           <Route path="/admin/campaigns" element={<CampaignManagement />} />
+          <Route path="/admin/scorecards" element={<ScorecardManagement />} />
           <Route path="/admin/settings" element={<PlatformSettings />} />
           <Route path="/admin/logs" element={<AuditLogs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
