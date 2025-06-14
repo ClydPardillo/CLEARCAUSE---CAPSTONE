@@ -73,7 +73,7 @@ const App = () => (
           <Route path="/charity/campaigns/edit/:campaignId" element={<CampaignForm />} />
           <Route path="/charity/campaigns/:campaignId/milestones" element={<ManageMilestones />} />
           <Route path="/charity/campaigns/:campaignId/milestones/:milestoneId/submit" element={<SubmitProofForm />} />
-          <Route path="/charity/campaigns/:campaignId/update" element={<PostImpactUpdate />} />
+          <Route path="/charity/campaigns/:campaignId/updates" element={<PostImpactUpdate />} />
           <Route path="/charity/verifications" element={<VerificationStatus />} />
           <Route path="/charity/funds" element={<FundsManagement />} />
           <Route path="/charity/profile" element={<OrganizationProfile />} />
