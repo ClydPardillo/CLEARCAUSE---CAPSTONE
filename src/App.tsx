@@ -41,6 +41,9 @@ import CampaignManagement from "./pages/admin/CampaignManagement";
 import ScorecardManagement from "./pages/admin/ScorecardManagement";
 import PlatformSettings from "./pages/admin/PlatformSettings";
 import AuditLogs from "./pages/admin/AuditLogs";
+import MilestoneVerification from "./pages/admin/MilestoneVerification";
+import CampaignDiscovery from "./pages/CampaignDiscovery";
+import PaymentMethods from "./pages/PaymentMethods";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +56,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/campaigns" element={<Campaigns />} />
+          <Route path="/campaign-discovery" element={<CampaignDiscovery />} />
           <Route path="/campaigns/:campaignId" element={<CampaignDetail />} />
           <Route path="/charities/:charityId" element={<CharityProfile />} />
           <Route path="/donate/:campaignId" element={<Donate />} />
@@ -78,6 +82,7 @@ const App = () => (
           <Route path="/charity/settings" element={<CharitySettings />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/milestone-verification" element={<MilestoneVerification />} />
           <Route path="/admin/verifications" element={<VerificationQueue />} />
           <Route path="/admin/verifications/:submissionId" element={<VerificationDetail />} />
           <Route path="/admin/payouts" element={<FundReleaseManagement />} />
