@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { 
@@ -21,6 +20,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import MilestoneTracker from '@/components/ui/campaign/MilestoneTracker';
 import ImpactDashboard from '@/components/ui/campaign/ImpactDashboard';
+import AuditTrail from '@/components/ui/campaign/AuditTrail';
 
 const SAMPLE_CAMPAIGN = {
   id: "1",
@@ -201,7 +201,7 @@ const CampaignDetail: React.FC = () => {
                   <nav className="flex -mb-px">
                     <button
                       onClick={() => setActiveTab('about')}
-                      className={`w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm ${
+                      className={`w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm ${
                         activeTab === 'about'
                           ? 'border-clearcause-primary text-clearcause-primary'
                           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -211,7 +211,7 @@ const CampaignDetail: React.FC = () => {
                     </button>
                     <button
                       onClick={() => setActiveTab('updates')}
-                      className={`w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm ${
+                      className={`w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm ${
                         activeTab === 'updates'
                           ? 'border-clearcause-primary text-clearcause-primary'
                           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -221,13 +221,23 @@ const CampaignDetail: React.FC = () => {
                     </button>
                     <button
                       onClick={() => setActiveTab('milestones')}
-                      className={`w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm ${
+                      className={`w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm ${
                         activeTab === 'milestones'
                           ? 'border-clearcause-primary text-clearcause-primary'
                           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                       }`}
                     >
                       Milestones
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('audit')}
+                      className={`w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm ${
+                        activeTab === 'audit'
+                          ? 'border-clearcause-primary text-clearcause-primary'
+                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      Audit Trail
                     </button>
                   </nav>
                 </div>
@@ -248,6 +258,10 @@ const CampaignDetail: React.FC = () => {
 
                   {activeTab === 'milestones' && (
                     <MilestoneTracker milestones={MILESTONES} />
+                  )}
+
+                  {activeTab === 'audit' && (
+                    <AuditTrail campaignId={campaignId || ''} />
                   )}
                 </div>
               </div>
