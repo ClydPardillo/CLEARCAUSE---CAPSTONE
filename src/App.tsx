@@ -42,7 +42,6 @@ import ScorecardManagement from "./pages/admin/ScorecardManagement";
 import PlatformSettings from "./pages/admin/PlatformSettings";
 import AuditLogs from "./pages/admin/AuditLogs";
 import MilestoneVerification from "./pages/admin/MilestoneVerification";
-import CampaignDiscovery from "./pages/CampaignDiscovery";
 import PaymentMethods from "./pages/PaymentMethods";
 
 const queryClient = new QueryClient();
@@ -56,7 +55,6 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/campaigns" element={<Campaigns />} />
-          <Route path="/campaign-discovery" element={<CampaignDiscovery />} />
           <Route path="/campaigns/:campaignId" element={<CampaignDetail />} />
           <Route path="/charities/:charityId" element={<CharityProfile />} />
           <Route path="/donate/:campaignId" element={<Donate />} />
