@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { TrendingUp, Users, Calendar } from 'lucide-react';
 
 interface ImpactMetric {
   id: string;
@@ -36,12 +35,6 @@ const ImpactDashboard: React.FC<ImpactDashboardProps> = ({ metrics, recentActivi
               </div>
               <h3 className="text-2xl font-semibold">{metric.value}</h3>
               <p className="text-sm text-gray-500">{metric.title}</p>
-              {metric.trend !== undefined && (
-                <div className={`mt-2 flex items-center text-sm ${metric.trend >= 0 ? 'text-clearcause-success' : 'text-red-500'}`}>
-                  <TrendingUp size={14} className="mr-1" />
-                  <span>{metric.trend >= 0 ? '+' : ''}{metric.trend}% this week</span>
-                </div>
-              )}
             </div>
           ))}
         </div>
