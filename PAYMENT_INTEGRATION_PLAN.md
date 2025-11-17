@@ -96,23 +96,6 @@ donations table:
 - Checkout Sessions API for unified experience
 - Webhooks for async payment confirmation
 
-### Option 2: Xendit
-
-**Pros:**
-- ✅ Single unified eWallet API endpoint
-- ✅ Supports GCash, GrabPay, Maya
-- ✅ REST API with simple authentication
-- ✅ Good for multi-country expansion
-
-**Cons:**
-- ⚠️ Less Philippine-specific support
-- ⚠️ Smaller local developer community
-- ⚠️ Documentation less comprehensive
-
-**Pricing:**
-- E-wallets: 2.9% per transaction
-- Cards: 3.5% + ₱15 per transaction
-
 ---
 
 ## Recommended Architecture
