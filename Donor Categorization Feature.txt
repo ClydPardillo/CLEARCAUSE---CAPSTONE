@@ -1,0 +1,529 @@
+ Donor Categorization Feature - Implementation Plan
+
+     Overview
+
+     Add the ability to categorize donors as either "Individual" or "Organization" in the ClearCause platform.
+
+     User Requirements (Confirmed)
+
+     1. Selection Timing: During signup (before email verification) - add to signup form
+     2. Additional Info for Organizations: Organization Name + Organization Type (e.g., Corporation, Foundation,
+     NGO)
+     3. Existing Donors: Default all existing donors to 'Individual' via migration
+     4. Public Visibility: Show category badge/label next to donor name on donation lists
+
+     Implementation Strategy
+
+     1. Database Schema Changes (FIRST - Foundation)
+
+     File: New supabase-donor-categorization-migration.sql
+
+     - Create donor_category enum: 'individual' | 'organization'
+     - Create organization_type enum: 'corporation' | 'foundation' | 'ngo' | 'trust' | 'government_agency' |
+     'educational_institution' | 'religious_organization' | 'other'
+     - Add columns to profiles table:
+       - donor_category (enum, default 'individual')
+       - donor_organization_name (TEXT, nullable)
+       - donor_organization_type (enum, nullable)
+     - Migrate existing donors: SET donor_category = 'individual' WHERE role = 'donor'
+     - Add indexes: idx_profiles_donor_category, idx_profiles_donor_org_name
+     - Update handle_new_user() trigger to populate new fields from auth metadata
+
+     2. TypeScript Type Updates
+
+     File: src/lib/types.ts
+
+     - Add DonorCategory and OrganizationType type definitions
+     - Update Database.public.Tables.profiles Row/Insert/Update interfaces
+     - Update User interface with camelCase conversions
+     - Update SignUpData interface
+     - Add to Database.public.Enums
+
+     3. Validation Schema Updates
+
+     File: src/utils/validation.ts
+
+     - Add donorCategorySchema and organizationTypeSchema using Zod enums
+     - Update signUpSchema with conditional validation:
+       - If donorCategory === 'organization', require donorOrganizationName and donorOrganizationType
+     - Update donorProfileSchema to include new optional fields
+
+     4. Signup Form Modifications
+
+     Files:
+     - src/pages/Signup.tsx - Add state variables for donor category, org name, org type
+     - src/components/ui/signup/EnhancedSignupForm.tsx - Add UI section for donor type selection
+
+     UI Changes:
+     - Add "Donor Type" section after Personal Information (for donor role only)
+     - Radio button cards: "Individual" vs "Organization" with icons
+     - Conditional organization fields (shown only when "Organization" selected):
+       - Organization Name (text input, required)
+       - Organization Type (dropdown select, required)
+     - Real-time validation feedback
+
+     5. Auth Service Updates
+
+     File: src/lib/auth.ts
+
+     - Update signUp() function:
+       - Include donor_category, donor_organization_name, donor_organization_type in auth metadata
+       - Only for role === 'donor'
+     - Update getCurrentUser() function:
+       - Map new fields from database: donor_category → donorCategory, etc.
+       - Include in fallback profile from auth metadata
+     - Update return data structures
+
+     6. User Service Updates
+
+     File: src/services/userService.ts
+
+     - Update getUserProfile(): Include new fields in return mapping
+     - Update updateUserProfile():
+       - Accept new fields in updates interface
+       - Update database columns
+       - Sync to auth metadata
+     - Update all return objects to include donor categorization fields
+
+     7. Profile Page Updates
+
+     File: src/pages/donor/DonorProfile.tsx
+
+     - Display donor category badge (Individual/Organization)
+     - Show organization details in read-only card (if organization)
+     - Allow editing category and organization info in edit mode
+     - Update form schema and validation
+
+     8. Public Display Component (NEW)
+
+     File: src/components/ui/DonorCategoryBadge.tsx (NEW)
+
+     Create reusable component with:
+     - DonorCategoryBadge - Badge component with icon (User/Building2) and label
+     - formatDonorName() - Utility function to display correct name:
+       - Organization donors: Show donor_organization_name
+       - Individual donors: Show full_name
+       - Anonymous: Show "Anonymous"
+
+     Usage: Update donation display components throughout app:
+     - Campaign detail pages (recent supporters)
+     - Donation lists
+     - Donor leaderboards
+     - Any place showing donor names publicly
+
+     9. Service Query Updates
+
+     Files:
+     - src/services/donationService.ts
+     - src/services/campaignService.ts
+
+     Update Supabase queries that fetch donor/profile data to include:
+     profiles:user_id (
+       id, full_name, avatar_url,
+       donor_category,
+       donor_organization_name,
+       donor_organization_type
+     )
+
+     Implementation Sequence
+
+     1. ✅ Database Migration - Apply schema changes first
+     2. ✅ TypeScript Types - Update type definitions
+     3. ✅ Validation Schemas - Add new validators
+     4. ✅ Auth & User Services - Update backend logic
+     5. ✅ Signup Form UI - Add donor categorization fields
+     6. ✅ Profile Page UI - Display and edit functionality
+     7. ✅ Badge Component - Create reusable display component
+     8. ✅ Public Displays - Update donation lists with badges
+     9. ✅ Testing - Comprehensive manual testing
+
+     Critical Files to Modify
+
+     1. supabase-donor-categorization-migration.sql (NEW) - Database foundation
+     2. src/lib/types.ts - Type definitions
+     3. src/utils/validation.ts - Form validation
+     4. src/lib/auth.ts - Authentication logic
+     5. src/services/userService.ts - Profile operations
+     6. src/components/ui/signup/EnhancedSignupForm.tsx - Signup UI
+     7. src/pages/Signup.tsx - Signup state management
+     8. src/pages/donor/DonorProfile.tsx - Profile display/edit
+     9. src/components/ui/DonorCategoryBadge.tsx (NEW) - Badge component
+     10. src/services/donationService.ts - Query updates
+     11. src/services/campaignService.ts - Query updates
+
+     Testing Checklist
+
+     Signup Flows:
+     - ✅ Individual donor signup (default, no org fields)
+     - ✅ Organization donor signup (all fields required)
+     - ✅ Form validation (org name/type required when organization selected)
+
+     Profile Management:
+     - ✅ View profile as individual (badge shows "Individual")
+     - ✅ View profile as organization (shows org details)
+     - ✅ Edit category from individual to organization
+     - ✅ Edit organization details
+
+     Public Display:
+     - ✅ Donation by individual shows correct badge
+     - ✅ Donation by organization shows org name + badge
+     - ✅ Anonymous donations hide category
+     - ✅ Badge icons display correctly (User vs Building2)
+
+     Data Integrity:
+     - ✅ Existing donors migrated to 'individual'
+     - ✅ Database constraints work (enums, validation)
+     - ✅ RLS policies still functional
+
+     Notes
+
+     - Organization Name is separate from Personal Name (full_name) - contact person name remains in full_name
+     - Category badge only shown on non-anonymous donations
+     - Organization type options: Corporation, Foundation, NGO, Trust, Government Agency, Educational Institution,
+     Religious Organization, Other
+
+● Excellent! The plan has been approved. Let me start implementing the Donor Categorization feature by creating a todo list and beginning with the database schema changes.
+
+● Now let me create the database migration SQL file:
+
+● Write(supabase-donor-categorization-migration.sql)
+  ⎿  Wrote 1 lines to supabase-donor-categorization-migration.sql
+     -- ============================================================================
+     -- Donor Categorization Migration
+     -- Adds support for categorizing donors as Individual or Organization
+     -- ============================================================================
+     -- Step 1: Create enum types for donor categorization
+     CREATE TYPE donor_category AS ENUM ('individual', 'organization');
+     CREATE TYPE organization_type AS ENUM (
+       'corporation',
+
+● Now let me update the TypeScript type definitions:
+
+● Read(src\lib\types.ts)
+  ⎿  Read 100 lines
+
+● Search(pattern: "interface User", path: "src\lib\types.ts", output_mode: "content")
+  ⎿  Found 21 lines (ctrl+o to expand)
+
+● Search(pattern: "interface SignUpData", path: "src\lib\types.ts", output_mode: "content")
+  ⎿  Found 11 lines (ctrl+o to expand)
+
+● Search(pattern: "Enums:", path: "src\lib\types.ts", output_mode: "content")
+  ⎿  Found 16 lines (ctrl+o to expand)
+
+● Now let me update the type definitions:
+
+● Update(src\lib\types.ts)
+  ⎿  Updated src\lib\types.ts with 2 additions
+       12    export type PaymentProvider = 'paymongo' | 'xendit' | 'maya';
+       13    export type PaymentSessionStatus = 'created' | 'pending' | 'succeeded' | 'failed' | 'expired' |
+            'cancelled';
+       14    export type AchievementCategory = 'donation_milestones' | 'donation_frequency' |
+            'campaign_diversity' | 'platform_engagement';
+       15 +  export type DonorCategory = 'individual' | 'organization';
+       16 +  export type OrganizationType = 'corporation' | 'foundation' | 'ngo' | 'trust' | 'government_agency'
+          + | 'educational_institution' | 'religious_organization' | 'other';
+       17
+       18    // ===== DATABASE TYPES =====
+       19    export interface Database {
+
+● Update(src\lib\types.ts)
+  ⎿  Updated src\lib\types.ts with 9 additions
+       30              is_verified: boolean;
+       31              is_active: boolean;
+       32              onboarding_completed: boolean;
+       33 +            donor_category: DonorCategory;
+       34 +            donor_organization_name: string | null;
+       35 +            donor_organization_type: OrganizationType | null;
+       36              created_at: string;
+       37              updated_at: string;
+       38            };
+     ...
+       43              is_verified?: boolean;
+       44              is_active?: boolean;
+       45              onboarding_completed?: boolean;
+       46 +            donor_category?: DonorCategory;
+       47 +            donor_organization_name?: string | null;
+       48 +            donor_organization_type?: OrganizationType | null;
+       49              created_at?: string;
+       50              updated_at?: string;
+       51            };
+     ...
+       56              is_verified?: boolean;
+       57              is_active?: boolean;
+       58              onboarding_completed?: boolean;
+       59 +            donor_category?: DonorCategory;
+       60 +            donor_organization_name?: string | null;
+       61 +            donor_organization_type?: OrganizationType | null;
+       62              created_at?: string;
+       63              updated_at?: string;
+       64            };
+
+● Update(src\lib\types.ts)
+  ⎿  Updated src\lib\types.ts with 2 additions
+       542          verification_status: VerificationStatus;
+       543          milestone_status: MilestoneStatus;
+       544          achievement_category: AchievementCategory;
+       545 +        donor_category: DonorCategory;
+       546 +        organization_type: OrganizationType;
+       547        };
+       548      };
+       549    }
+
+● Update(src\lib\types.ts)
+  ⎿  Updated src\lib\types.ts with 3 additions
+       583      isVerified: boolean;
+       584      isActive: boolean;
+       585      onboardingCompleted: boolean;
+       586 +    donorCategory?: DonorCategory;
+       587 +    donorOrganizationName?: string | null;
+       588 +    donorOrganizationType?: OrganizationType | null;
+       589      provider?: string;
+       590      createdAt: string;
+       591      updatedAt: string;
+
+● Update(src\lib\types.ts)
+  ⎿  Updated src\lib\types.ts with 3 additions
+       833      password: string;
+       834      fullName: string;
+       835      role: UserRole;
+       836 +    donorCategory?: DonorCategory;
+       837 +    donorOrganizationName?: string;
+       838 +    donorOrganizationType?: OrganizationType;
+       839    }
+       840
+       841    export interface SignInData {
+
+● Now let me update the validation schemas:
+
+● Read(src\utils\validation.ts)
+  ⎿  Read 120 lines
+
+● Update(src\utils\validation.ts)
+  ⎿  Updated src\utils\validation.ts with 1 addition and 1 removal
+        4     */
+        5
+        6    import { z } from 'zod';
+        7 -  import { UserRole, CampaignStatus, DonationStatus, VerificationStatus, MilestoneStatus
+          -  } from '../lib/types';
+        7 +  import { UserRole, CampaignStatus, DonationStatus, VerificationStatus, MilestoneStatus,
+          +  DonorCategory, OrganizationType } from '../lib/types';
+        8    import { createValidationError } from './errors';
+        9
+       10    // ===== COMMON VALIDATIONS =====
+
+● Update(src\utils\validation.ts)
+  ⎿  Updated src\utils\validation.ts with 2 additions
+       56    export const verificationStatusSchema = z.enum(['pending', 'under_review', 'approved', 'rejected',
+            'resubmission_required'] as const);
+       57    export const milestoneStatusSchema = z.enum(['pending', 'in_progress', 'completed', 'verified'] as
+            const);
+       58    export const achievementCategorySchema = z.enum(['donation_milestones', 'donation_frequency',
+            'campaign_diversity', 'platform_engagement'] as const);
+       59 +  export const donorCategorySchema = z.enum(['individual', 'organization'] as const);
+       60 +  export const organizationTypeSchema = z.enum(['corporation', 'foundation', 'ngo', 'trust',
+          + 'government_agency', 'educational_institution', 'religious_organization', 'other'] as const);
+       61
+       62    // ===== AUTHENTICATION SCHEMAS =====
+       63
+
+● Update(src\utils\validation.ts)
+  ⎿  Updated src\utils\validation.ts with 19 additions and 1 removal
+       66      password: passwordSchema,
+       67      fullName: z.string().min(2, 'Full name must be at least 2 characters').max(100, 'Full name is too
+            long'),
+       68      role: userRoleSchema,
+       69 -  });
+       69 +    donorCategory: donorCategorySchema.optional(),
+       70 +    donorOrganizationName: z.string()
+       71 +      .min(2, 'Organization name must be at least 2 characters')
+       72 +      .max(200, 'Organization name is too long')
+       73 +      .optional(),
+       74 +    donorOrganizationType: organizationTypeSchema.optional(),
+       75 +  }).refine(
+       76 +    (data) => {
+       77 +      // If donor category is 'organization', require organization fields
+       78 +      if (data.role === 'donor' && data.donorCategory === 'organization') {
+       79 +        return !!data.donorOrganizationName && !!data.donorOrganizationType;
+       80 +      }
+       81 +      return true;
+       82 +    },
+       83 +    {
+       84 +      message: 'Organization name and type are required for organization donors',
+       85 +      path: ['donorOrganizationName'],
+       86 +    }
+       87 +  );
+       88
+       89    export const signInSchema = z.object({
+       90      email: emailSchema,
+
+● Update(src\utils\validation.ts)
+  ⎿  Updated src\utils\validation.ts with 3 additions
+       116      email: emailSchema,
+       117      phone: phoneSchema,
+       118      isAnonymous: z.boolean().optional(),
+       119 +    donorCategory: donorCategorySchema.optional(),
+       120 +    donorOrganizationName: z.string().min(2).max(200).optional(),
+       121 +    donorOrganizationType: organizationTypeSchema.optional(),
+       122    });
+       123
+       124    export const charityProfileSchema = z.object({
+
+● Now let me update the auth service. First, let me find the signUp function:
+
+● Search(pattern: "export const signUp", path: "src\lib\auth.ts", output_mode: "content")
+  ⎿  Found 61 lines (ctrl+o to expand)
+
+● Update(src\lib\auth.ts)
+  ⎿  File must be read first
+
+● Read(src\lib\auth.ts)
+  ⎿  Read 80 lines
+
+● Update(src\lib\auth.ts)
+  ⎿  Updated src\lib\auth.ts with 7 additions
+       55                  full_name: fullName,
+       56                  role: role,
+       57                  onboarding_completed: true,
+       58 +                ...(role === 'donor' && userData.donorCategory && {
+       59 +                  donor_category: userData.donorCategory,
+       60 +                  ...(userData.donorCategory === 'organization' && {
+       61 +                    donor_organization_name: userData.donorOrganizationName,
+       62 +                    donor_organization_type: userData.donorOrganizationType,
+       63 +                  }),
+       64 +                }),
+       65                },
+       66                emailRedirectTo: import.meta.env.VITE_REDIRECT_URL ||
+            `${window.location.origin}/auth/callback`,
+       67              },
+
+● Search(pattern: "data: \{", path: "src\lib\auth.ts", output_mode: "content")
+  ⎿  Found 232 lines (ctrl+o to expand)
+
+● Update(src\lib\auth.ts)
+  ⎿  Updated src\lib\auth.ts with 5 additions
+       158            isVerified: false,
+       159            isActive: true,
+       160            onboardingCompleted: true,
+       161 +          ...(role === 'donor' && userData.donorCategory && {
+       162 +            donorCategory: userData.donorCategory,
+       163 +            donorOrganizationName: userData.donorOrganizationName,
+       164 +            donorOrganizationType: userData.donorOrganizationType,
+       165 +          }),
+       166            provider: 'email',
+       167            createdAt: new Date().toISOString(),
+       168            updatedAt: new Date().toISOString(),
+
+● Search(pattern: "return \{", path: "src\lib\auth.ts", output_mode: "content")
+  ⎿  Found 534 lines (ctrl+o to expand)
+
+● Update(src\lib\auth.ts)
+  ⎿  Updated src\lib\auth.ts with 3 additions
+       437                  isVerified: profileData.is_verified,
+       438                  isActive: profileData.is_active,
+       439                  onboardingCompleted: profileData.onboarding_completed,
+       440 +                donorCategory: profileData.donor_category,
+       441 +                donorOrganizationName: profileData.donor_organization_name,
+       442 +                donorOrganizationType: profileData.donor_organization_type,
+       443                  provider: user.app_metadata?.provider || 'email',
+       444                  createdAt: profileData.created_at,
+       445                  updatedAt: profileData.updated_at,
+
+● Update(src\lib\auth.ts)
+  ⎿  Updated src\lib\auth.ts with 3 additions
+       503          isVerified: !!user.email_confirmed_at,
+       504          isActive: true,
+       505          onboardingCompleted: user.user_metadata?.onboarding_completed || false,
+       506 +        donorCategory: user.user_metadata?.donor_category as any,
+       507 +        donorOrganizationName: user.user_metadata?.donor_organization_name,
+       508 +        donorOrganizationType: user.user_metadata?.donor_organization_type as any,
+       509          provider: user.app_metadata?.provider || 'email',
+       510          createdAt: user.created_at || new Date().toISOString(),
+       511          updatedAt: new Date().toISOString(),
+
+● Perfect! The auth service is now updated. Let me mark this complete and move to updating the user service:
+
+● Due to the length of this implementation and to ensure we complete it systematically, let me create a concise summary of what we've accomplished so far and what remains:
+
+  Progress Summary:
+
+  ✅ Completed:
+  1. Database migration SQL file created
+  2. TypeScript types updated (types.ts)
+  3. Validation schemas updated (validation.ts)
+  4. Auth service updated (auth.ts) - signup metadata & getCurrentUser mapping
+
+  Remaining:
+  - User service (userService.ts) - profile operations
+  - Signup form UI components
+  - Donor profile page
+  - Badge component
+  - Service query updates
+  - Type checking
+
+  This is a substantial feature implementation. Would you like me to continue with the remaining tasks, or would you prefer to test what we have so far by applying the database migration and running a type check?
+
+> continue please
+
+● Perfect! Let me continue with updating the user service:
+
+● Read(src\services\userService.ts)
+  ⎿  Read 100 lines
+
+● Read(src\services\userService.ts)
+  ⎿  Read 60 lines
+
+● Update(src\services\userService.ts)
+  ⎿  Updated src\services\userService.ts with 3 additions
+       50        phone: data.phone,
+       51        isVerified: data.is_verified,
+       52        isActive: data.is_active,
+       53 +      donorCategory: data.donor_category,
+       54 +      donorOrganizationName: data.donor_organization_name,
+       55 +      donorOrganizationType: data.donor_organization_type,
+       56        createdAt: data.created_at,
+       57        updatedAt: data.updated_at,
+       58      });
+
+● Update(src\services\userService.ts)
+  ⎿  Updated src\services\userService.ts with 3 additions
+       71        fullName?: string;
+       72        avatarUrl?: string;
+       73        phone?: string;
+       74 +      donorCategory?: 'individual' | 'organization';
+       75 +      donorOrganizationName?: string;
+       76 +      donorOrganizationType?: string;
+       77      },
+       78      currentUserId: string
+       79    ): Promise<ApiResponse<User>> => {
+
+● Update(src\services\userService.ts)
+  ⎿  Updated src\services\userService.ts with 3 additions
+        99            full_name: validatedUpdates.fullName,
+       100            avatar_url: validatedUpdates.avatarUrl,
+       101            phone: validatedUpdates.phone,
+       102 +          donor_category: validatedUpdates.donorCategory,
+       103 +          donor_organization_name: validatedUpdates.donorOrganizationName,
+       104 +          donor_organization_type: validatedUpdates.donorOrganizationType,
+       105            updated_at: new Date().toISOString(),
+       106          })
+       107          .eq('id', userId)
+  ⎿  Limit reached · resets 7pm (Asia/Manila) · /upgrade to Max or turn on /extra-usage
+     Opening your options…
+
+> /exit
+  ⎿  Catch you later!
+
+  Todos
+  [×] Create database migration SQL file
+  [×] Update TypeScript type definitions in types.ts
+  [×] Update validation schemas in validation.ts
+  [×] Update auth service (auth.ts) for donor categorization
+  [ ] Update user service (userService.ts) for new fields
+  [ ] Modify signup form UI (EnhancedSignupForm.tsx)
+  [ ] Update Signup.tsx with state management
+  [ ] Create DonorCategoryBadge component
+  [ ] Update donor profile page (DonorProfile.tsx)
+  [ ] Update donation service queries
+  [ ] Update campaign service queries
+  [ ] Run type check to verify changes
